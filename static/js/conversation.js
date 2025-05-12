@@ -2,16 +2,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const recordingIndicator = document.getElementById('recIndicator');
 
     let mediaRecorder;
-    let audioChunks = [];
 
-    document.addEventListener('keydown', async ev => {
+    document.addEventListener('keypress', async ev => {
         if (ev.key !== ' ') return
 
         try {
+            let audioChunks = [];
+
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             mediaRecorder = new MediaRecorder(stream);
 
             mediaRecorder.ondataavailable = event => {
+                console.log('NEW CHUNK!')
                 audioChunks.push(event.data);
             };
 
@@ -28,8 +30,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })
 
-    document.addEventListener('keyup', ev => {
-        if (ev.key !== ' ') return;
+    document.addEventListener('keypress', ev => {
+        if (ev.key !== 'a') return;
 
         recordingIndicator.style.display = 'none';
         mediaRecorder.stop();
@@ -37,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function sendAudioToServer(audioBlob) {
         const formData = new FormData();
+
         formData.append('audio', audioBlob, 'recording.wav');
 
         fetch(messageURL, {
@@ -50,11 +53,11 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             console.log('Success:', data);
             const audioCtx = new AudioContext();
-            const buffer = audioCtx.createBuffer(1, data.output.audio.length, data.output.sr);
+            const buffer = audioCtx.createBuffer(1, data.audio.length, data.sr);
             const channelData = buffer.getChannelData(0);
 
-            for (let i = 0; i < data.output.audio.length; i++) {
-                channelData[i] = data.output.audio[i]
+            for (let i = 0; i < data.audio.length; i++) {
+                channelData[i] = data.audio[i]
             }
 
             const source = audioCtx.createBufferSource();

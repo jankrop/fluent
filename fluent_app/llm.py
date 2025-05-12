@@ -10,18 +10,17 @@ whisper = WhisperModel("small", device="cuda", compute_type="float16")
 tts = TTS("tts_models/en/ljspeech/glow-tts", progress_bar=True).to("cuda")
 
 def process_conversation(
-    audio: list[float],
-    sr: int,
+    audio_file,
     log: list[dict[str, str]],
 ) -> dict[str, Any]:
     # return {'audio': audio, 'sr': sr, 'log': log}
-    with open('/home/jan/fluent-django/test.txt', 'r') as f:
-        audio = json.loads(f.read())
+    # with open('/home/jan/fluent-django/test.txt', 'r') as f:
+    #     audio = json.loads(f.read())
     print('Hello from task!')
-    audio = np.array(audio)
+    # audio = np.array(audio)
     print('Transcribing...')
     segments, info = whisper.transcribe(
-        '/home/jan/fluent-django/hello.wav', beam_size=5, language='en'
+        audio_file, beam_size=5, language='en'
     )
     prompt = "".join([s.text for s in segments])
     log.append({"role": "user", "content": prompt})
