@@ -1,6 +1,5 @@
 import time
 
-from celery.result import AsyncResult
 from fluent.celery import app
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
@@ -9,7 +8,7 @@ import librosa
 import numpy as np
 
 from .models import Conversation
-from .tasks import process_conversation
+from .llm import process_conversation
 
 def index(request):
     if request.user.is_authenticated:
