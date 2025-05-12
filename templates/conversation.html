@@ -1,0 +1,16 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        const messageURL = "{% url 'send_message' conversation.pk %}"
+    </script>
+    <script src="{% static 'js/conversation.js' %}"></script>
+    <title>Title</title>
+</head>
+<body>
+    <p>Press space to record... <span id="recIndicator" style="color: #00aa00; display: none;">Recording!</span></p>
+</body>
+</html>
